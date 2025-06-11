@@ -178,13 +178,13 @@ export class GdmLiveAudioVisuals3D extends LitElement {
     const envMap = this.createEnvironmentMap();
     scene.environment = envMap;
 
-    // Create the enhanced globe with better materials
+    // Create the enhanced globe with dark red materials
     const geometry = new THREE.IcosahedronGeometry(1, 12); // Higher detail
     const globeMaterial = new THREE.MeshStandardMaterial({
-      color: 0x00004b,
+      color: 0x8B0000, // Dark red color
       metalness: 0.5, // Reduced from 0.9 for better balance
       roughness: 0.1,
-      emissive: 0x00006b,
+      emissive: 0x600000, // Dark red emissive glow
       emissiveIntensity: 0.8,
       envMap: envMap,
       envMapIntensity: 1.5
