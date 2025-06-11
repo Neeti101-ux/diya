@@ -343,7 +343,7 @@ export class GdmLiveAudio extends LitElement {
           .outputNode=${this.outputNode}></gdm-live-audio-visuals-3d>
         
         <div class="footer">
-          © 2025 <a href="https://ubintelligence.tech/" target="_blank">UB Intelligence</a>. AI-powered Legal assistance.
+          © 2025 <a href="https://ubintelligence.tech/" target="_blank">UB Intelligence</a>. AI Companion.
         </div>
       </div>
     `;
