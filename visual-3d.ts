@@ -203,7 +203,7 @@ export class GdmLiveAudioVisuals3D extends LitElement {
     scene.add(globe);
     this.globe = globe;
 
-    // Fixed particle system with proper spherical distribution
+    // Fixed particle system with proper spherical distribution and dark red color
     const particleCount = 2000; // Reduced count for better performance
     const particleGeometry = new THREE.BufferGeometry();
     
@@ -237,7 +237,7 @@ export class GdmLiveAudioVisuals3D extends LitElement {
     particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     
     const particleMaterial = new THREE.PointsMaterial({
-      color: 0x000000, // Black color
+      color: 0x8B0000, // Dark red color to match the globe
       size: 0.04, // Updated from 0.03 to 0.04
       transparent: false,
       opacity: 1.0,
