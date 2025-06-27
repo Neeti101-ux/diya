@@ -183,7 +183,7 @@ export class GdmLiveAudio extends LitElement {
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
       backdrop-filter: blur(20px);
       border-radius: 24px;
-      padding: 48px;
+      padding: 32px;
       box-shadow: 
         0 32px 64px rgba(0, 0, 0, 0.12),
         0 0 0 1px rgba(255, 255, 255, 0.05),
@@ -191,6 +191,8 @@ export class GdmLiveAudio extends LitElement {
       border: 1px solid rgba(255, 255, 255, 0.18);
       max-width: 480px;
       width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
       z-index: 1000;
       text-align: center;
       animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -208,37 +210,37 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .personalization-form h2 {
-      margin: 0 0 8px 0;
+      margin: 0 0 6px 0;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 700;
       letter-spacing: -0.8px;
       line-height: 1.2;
     }
 
     .personalization-form p {
-      margin: 0 0 36px 0;
+      margin: 0 0 24px 0;
       color: #64748b;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.5;
       font-weight: 400;
     }
 
     .form-group {
-      margin-bottom: 24px;
+      margin-bottom: 18px;
       text-align: left;
       position: relative;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       color: #374151;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13px;
       letter-spacing: 0.2px;
       text-transform: uppercase;
     }
@@ -247,16 +249,16 @@ export class GdmLiveAudio extends LitElement {
       color: #9ca3af;
       font-weight: 400;
       text-transform: none;
-      font-size: 12px;
+      font-size: 11px;
       margin-left: 4px;
     }
 
     .personalization-form input[type="text"] {
       width: 100%;
-      padding: 16px 20px;
+      padding: 14px 16px;
       border: 2px solid #e2e8f0;
       border-radius: 16px;
-      font-size: 16px;
+      font-size: 15px;
       font-family: inherit;
       background: rgba(255, 255, 255, 0.9);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -285,15 +287,15 @@ export class GdmLiveAudio extends LitElement {
       color: white;
       border: none;
       border-radius: 16px;
-      padding: 18px 36px;
-      font-size: 17px;
+      padding: 16px 32px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 
         0 8px 16px rgba(102, 126, 234, 0.3),
         0 4px 8px rgba(102, 126, 234, 0.2);
-      margin-top: 16px;
+      margin-top: 12px;
       width: 100%;
       letter-spacing: 0.3px;
       position: relative;
@@ -316,10 +318,10 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .form-status {
-      margin-top: 20px;
-      padding: 16px 20px;
+      margin-top: 16px;
+      padding: 12px 16px;
       border-radius: 12px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       animation: fadeIn 0.3s ease;
     }
@@ -359,15 +361,15 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .form-icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 24px auto;
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 20px auto;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
+      font-size: 24px;
       box-shadow: 
         0 8px 16px rgba(102, 126, 234, 0.3),
         0 4px 8px rgba(102, 126, 234, 0.2);
@@ -377,6 +379,148 @@ export class GdmLiveAudio extends LitElement {
     @keyframes iconFloat {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-4px); }
+    }
+
+    /* Mobile and tablet responsiveness */
+    @media (max-width: 768px) {
+      .personalization-form {
+        padding: 24px;
+        width: 95%;
+        max-width: none;
+        margin: 0 auto;
+        border-radius: 20px;
+      }
+
+      .personalization-form h2 {
+        font-size: 24px;
+        margin-bottom: 4px;
+      }
+
+      .personalization-form p {
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      .form-group label {
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+
+      .personalization-form input[type="text"] {
+        padding: 12px 14px;
+        font-size: 16px; /* Prevent zoom on iOS */
+        border-radius: 12px;
+      }
+
+      .form-submit-button {
+        padding: 14px 28px;
+        font-size: 15px;
+        border-radius: 12px;
+        margin-top: 8px;
+      }
+
+      .form-status {
+        margin-top: 12px;
+        padding: 10px 14px;
+        font-size: 12px;
+      }
+
+      .form-icon {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+        font-size: 20px;
+        border-radius: 16px;
+      }
+    }
+
+    /* Small mobile devices */
+    @media (max-width: 480px) {
+      .personalization-form {
+        padding: 20px;
+        width: 98%;
+        border-radius: 16px;
+      }
+
+      .personalization-form h2 {
+        font-size: 22px;
+      }
+
+      .personalization-form p {
+        font-size: 13px;
+        margin-bottom: 18px;
+      }
+
+      .form-group {
+        margin-bottom: 14px;
+      }
+
+      .personalization-form input[type="text"] {
+        padding: 11px 12px;
+        border-radius: 10px;
+      }
+
+      .form-submit-button {
+        padding: 12px 24px;
+        font-size: 14px;
+        border-radius: 10px;
+      }
+
+      .form-icon {
+        width: 44px;
+        height: 44px;
+        margin-bottom: 14px;
+        font-size: 18px;
+        border-radius: 14px;
+      }
+    }
+
+    /* Landscape orientation on mobile */
+    @media (max-height: 600px) and (orientation: landscape) {
+      .personalization-form {
+        padding: 16px;
+        max-height: 95vh;
+        overflow-y: auto;
+      }
+
+      .personalization-form h2 {
+        font-size: 20px;
+        margin-bottom: 2px;
+      }
+
+      .personalization-form p {
+        font-size: 12px;
+        margin-bottom: 12px;
+      }
+
+      .form-group {
+        margin-bottom: 10px;
+      }
+
+      .form-group label {
+        margin-bottom: 4px;
+        font-size: 11px;
+      }
+
+      .personalization-form input[type="text"] {
+        padding: 8px 10px;
+      }
+
+      .form-submit-button {
+        padding: 10px 20px;
+        margin-top: 6px;
+      }
+
+      .form-icon {
+        width: 36px;
+        height: 36px;
+        margin-bottom: 8px;
+        font-size: 16px;
+      }
     }
 
     .history-panel {
