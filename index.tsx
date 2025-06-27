@@ -1169,11 +1169,35 @@ export class GdmLiveAudio extends LitElement {
   }
 
   private updateStatus(msg: string) {
-    this.status = msg;
+    // Simplify status messages for user-friendly display
+    if (msg.includes('Connected to') || msg.includes('Opened')) {
+      this.status = 'Connected';
+    } else if (msg.includes('Connecting') || msg.includes('Starting') || msg.includes('Retrying')) {
+      this.status = 'Connecting...';
+    } else if (msg.includes('Recording') || msg.includes('Capturing')) {
+      this.status = '🔴 Recording...';
+    } else if (msg.includes('Stopping') || msg.includes('stopped')) {
+      this.status = 'Ready to start';
+    } else if (msg.includes('Microphone')) {
+      this.status = 'Setting up microphone...';
+    } else {
+      this.status = msg;
+    }
   }
 
   private updateError(msg: string) {
-    this.error = msg;
+    // Simplify error messages for user-friendly display
+    if (msg.includes('quota') || msg.includes('limit') || msg.includes('exceeded') || 
+        msg.includes('Unable to connect') || msg.includes('Connection timeout') ||
+        msg.includes('too many') || msg.includes('rate limit')) {
+      this.error = 'Too many users right now. Try again shortly?';
+    } else if (msg.includes('API key') || msg.includes('unauthorized') || msg.includes('forbidden')) {
+      this.error = 'Service temporarily unavailable. Please try again later.';
+    } else if (msg.includes('microphone') || msg.includes('getUserMedia')) {
+      this.error = 'Microphone access required. Please allow microphone permissions.';
+    } else {
+      this.error = 'Connection issue. Please try again.';
+    }
   }
 
   private async startRecording() {
@@ -1443,12 +1467,6 @@ export class GdmLiveAudio extends LitElement {
 
         <div id="status">
           ${this.error || this.status}
-          ${!this.error && (this.currentModelIndex > 0 || this.currentApiKeyIndex > 0) ? html`
-            <br><small style="opacity: 0.7;">
-              Using ${this.getModelDisplayName(this.currentModel)}
-              ${this.apiKeys.length > 1 ? ` (Key ${this.currentApiKeyIndex + 1}/${this.apiKeys.length})` : ''}
-            </small>
-          ` : ''}
         </div>
         <gdm-live-audio-visuals-3d
           .inputNode=${this.inputNode}
