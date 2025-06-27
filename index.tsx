@@ -180,103 +180,160 @@ export class GdmLiveAudio extends LitElement {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(255, 255, 255, 0.95);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
       backdrop-filter: blur(20px);
-      border-radius: 20px;
-      padding: 40px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      max-width: 400px;
+      border-radius: 24px;
+      padding: 48px;
+      box-shadow: 
+        0 32px 64px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      max-width: 480px;
       width: 90%;
       z-index: 1000;
       text-align: center;
+      animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -48%) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
     }
 
     .personalization-form h2 {
-      margin: 0 0 10px 0;
-      color: #1a1a1a;
-      font-size: 28px;
-      font-weight: 600;
-      letter-spacing: -0.5px;
+      margin: 0 0 8px 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+      line-height: 1.2;
     }
 
     .personalization-form p {
-      margin: 0 0 30px 0;
-      color: #666666;
+      margin: 0 0 36px 0;
+      color: #64748b;
       font-size: 16px;
       line-height: 1.5;
+      font-weight: 400;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
       text-align: left;
+      position: relative;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 8px;
-      color: #333333;
-      font-weight: 500;
+      margin-bottom: 10px;
+      color: #374151;
+      font-weight: 600;
       font-size: 14px;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+
+    .form-group label .optional {
+      color: #9ca3af;
+      font-weight: 400;
+      text-transform: none;
+      font-size: 12px;
+      margin-left: 4px;
     }
 
     .personalization-form input[type="text"] {
       width: 100%;
-      padding: 14px 16px;
-      border: 2px solid #e5e7eb;
-      border-radius: 12px;
+      padding: 16px 20px;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
       font-size: 16px;
       font-family: inherit;
-      background: rgba(255, 255, 255, 0.8);
-      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.9);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       outline: none;
       box-sizing: border-box;
+      font-weight: 400;
+      color: #1f2937;
     }
 
     .personalization-form input[type="text"]:focus {
-      border-color: #6366F1;
+      border-color: #667eea;
       background: rgba(255, 255, 255, 1);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      box-shadow: 
+        0 0 0 4px rgba(102, 126, 234, 0.1),
+        0 4px 12px rgba(102, 126, 234, 0.15);
+      transform: translateY(-1px);
     }
 
     .personalization-form input[type="text"]::placeholder {
-      color: #9ca3af;
+      color: #a1a1aa;
+      font-weight: 400;
     }
 
     .form-submit-button {
-      background: #6366F1;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       border: none;
-      border-radius: 12px;
-      padding: 14px 32px;
-      font-size: 16px;
-      font-weight: 500;
+      border-radius: 16px;
+      padding: 18px 36px;
+      font-size: 17px;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(99, 102, 241, 0.25);
-      margin-top: 10px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        0 8px 16px rgba(102, 126, 234, 0.3),
+        0 4px 8px rgba(102, 126, 234, 0.2);
+      margin-top: 16px;
       width: 100%;
+      letter-spacing: 0.3px;
+      position: relative;
+      overflow: hidden;
     }
 
     .form-submit-button:hover {
-      background: #4F46E5;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3);
+      background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+      transform: translateY(-3px);
+      box-shadow: 
+        0 12px 24px rgba(102, 126, 234, 0.4),
+        0 8px 16px rgba(102, 126, 234, 0.3);
+    }
+
+    .form-submit-button:active {
+      transform: translateY(-1px);
+      box-shadow: 
+        0 6px 12px rgba(102, 126, 234, 0.3),
+        0 4px 8px rgba(102, 126, 234, 0.2);
     }
 
     .form-status {
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 8px;
+      margin-top: 20px;
+      padding: 16px 20px;
+      border-radius: 12px;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .form-status.error {
-      background: rgba(239, 68, 68, 0.1);
-      color: #DC2626;
-      border: 1px solid rgba(239, 68, 68, 0.2);
+      background: linear-gradient(135deg, rgba(248, 113, 113, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+      color: #dc2626;
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      box-shadow: 0 4px 8px rgba(248, 113, 113, 0.1);
     }
 
     .personalization-overlay {
@@ -285,11 +342,41 @@ export class GdmLiveAudio extends LitElement {
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(135deg, #8B0000 0%, #000000 50%, #8B0000 100%);
+      background: 
+        linear-gradient(135deg, rgba(139, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.98) 50%, rgba(139, 0, 0, 0.95) 100%),
+        radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 70% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
       z-index: 999;
       display: flex;
       align-items: center;
       justify-content: center;
+      animation: overlayFadeIn 0.4s ease;
+    }
+
+    @keyframes overlayFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .form-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 24px auto;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 
+        0 8px 16px rgba(102, 126, 234, 0.3),
+        0 4px 8px rgba(102, 126, 234, 0.2);
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
     }
 
     .history-panel {
@@ -931,6 +1018,9 @@ export class GdmLiveAudio extends LitElement {
       return html`
         <div class="personalization-overlay">
           <div class="personalization-form">
+            <div class="form-icon">
+              🤖
+            </div>
             <h2>Welcome to Diya</h2>
             <p>Let's personalize your AI companion experience</p>
             
@@ -961,7 +1051,7 @@ export class GdmLiveAudio extends LitElement {
             </div>
 
             <div class="form-group">
-              <label for="companyWebsite">Company Website <span style="color: #666; font-weight: 400;">(Optional)</span></label>
+              <label for="companyWebsite">Company Website <span class="optional">(Optional)</span></label>
               <input
                 type="text"
                 id="companyWebsite"
@@ -974,7 +1064,7 @@ export class GdmLiveAudio extends LitElement {
             </div>
 
             <div class="form-group">
-              <label for="linkedinProfile">LinkedIn Profile <span style="color: #666; font-weight: 400;">(Optional)</span></label>
+              <label for="linkedinProfile">LinkedIn Profile <span class="optional">(Optional)</span></label>
               <input
                 type="text"
                 id="linkedinProfile"
