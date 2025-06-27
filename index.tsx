@@ -135,6 +135,16 @@ export class GdmLiveAudio extends LitElement {
         background: #7C3AED;
         transform: translateY(-2px);
       }
+
+       button#userButton {
+         background: #F59E0B;
+         box-shadow: 0 4px 6px rgba(245, 158, 11, 0.25);
+       }
+
+       button#userButton:hover {
+         background: #D97706;
+         transform: translateY(-2px);
+       }
     }
 
     .footer {
@@ -893,6 +903,11 @@ export class GdmLiveAudio extends LitElement {
     }
   }
 
+  private togglePersonalizationForm() {
+    this.showPersonalizationForm = true;
+    this.showHistory = false;
+  }
+
   private formatTimestamp(date: Date): string {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
@@ -990,6 +1005,13 @@ export class GdmLiveAudio extends LitElement {
     return html`
       <div>
         <div class="controls">
+          <button
+            id="userButton"
+            @click=${this.togglePersonalizationForm}
+            ?disabled=${this.isRecording || this.showPersonalizationForm}
+            title="Update Profile">
+            👤
+          </button>
           <button
             id="historyButton"
             @click=${this.toggleHistory}
