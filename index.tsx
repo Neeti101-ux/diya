@@ -999,7 +999,7 @@ export class GdmLiveAudio extends LitElement {
   }
 
   private async connectToModel(model: string): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let connectionTimeout: NodeJS.Timeout;
       let isResolved = false;
       this.session = await this.client.live.connect({
