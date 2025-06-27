@@ -10,6 +10,19 @@ import {customElement, state} from 'lit/decorators.js';
 import {createBlob, decode, decodeAudioData} from './utils';
 import './visual-3d';
 
+interface ConversationMessage {
+  speaker: string;
+  text: string;
+  timestamp: Date;
+}
+
+interface Conversation {
+  id: string;
+  topic: string;
+  startTime: Date;
+  messages: ConversationMessage[];
+}
+
 @customElement('gdm-live-audio')
 export class GdmLiveAudio extends LitElement {
   @state() isRecording = false;
@@ -18,8 +31,12 @@ export class GdmLiveAudio extends LitElement {
   @state() username = '';
   @state() occupation = '';
   @state() showPersonalizationForm = true;
-  @state() conversationHistory: Array<{speaker: string, text: string, timestamp: Date}> = [];
+  @state() conversationHistory: ConversationMessage[] = [];
   @state() showHistory = false;
+  @state() allConversations: Conversation[] = [];
+  @state() currentConversationId: string | null = null;
+  @state() viewingPastConversation = false;
+  @state() selectedConversationId: string | null = null;
 
   private client: GoogleGenAI;
   private session: Session;
@@ -323,6 +340,51 @@ export class GdmLiveAudio extends LitElement {
       padding: 0;
     }
 
+    .conversation-list {
+      padding: 10px;
+    }
+
+    .conversation-item {
+      padding: 16px;
+      margin-bottom: 8px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .conversation-item:hover {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .conversation-item.active {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .conversation-topic {
+      font-weight: 600;
+      font-size: 14px;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .conversation-time {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .conversation-messages {
+      padding: 0 10px 10px 10px;
+    }
+
     .history-item {
       padding: 16px 20px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -369,6 +431,66 @@ export class GdmLiveAudio extends LitElement {
       font-style: italic;
     }
 
+    .history-actions {
+      padding: 15px 20px;
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+      display: flex;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .history-action-btn {
+      flex: 1;
+      padding: 8px 16px;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .history-action-btn:hover {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+
+    .history-action-btn.primary {
+      background: #6366F1;
+      color: white;
+      border-color: #6366F1;
+    }
+
+    .history-action-btn.primary:hover {
+      background: #4F46E5;
+    }
+
+    .history-action-btn.danger {
+      background: #EF4444;
+      color: white;
+      border-color: #EF4444;
+    }
+
+    .history-action-btn.danger:hover {
+      background: #DC2626;
+    }
+
+    .back-button {
+      padding: 10px 20px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      color: #6366F1;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .back-button:hover {
+      background: rgba(99, 102, 241, 0.1);
+    }
+
     @media (max-width: 768px) {
       .history-panel {
         top: 10px;
@@ -391,26 +513,126 @@ export class GdmLiveAudio extends LitElement {
       this.username = savedUsername;
       this.occupation = savedOccupation;
       this.showPersonalizationForm = false;
+      this.loadConversations();
       this.initClient();
     } else {
       this.showPersonalizationForm = true;
     }
+  }
 
-    // Load conversation history from localStorage
-    const savedHistory = localStorage.getItem('diya_conversation_history');
-    if (savedHistory) {
+  private loadConversations() {
+    // Load all conversations from localStorage
+    const savedConversations = localStorage.getItem('diya_all_conversations');
+    if (savedConversations) {
       try {
-        const parsedHistory = JSON.parse(savedHistory);
+        const parsedConversations = JSON.parse(savedConversations);
         // Convert timestamp strings back to Date objects
-        this.conversationHistory = parsedHistory.map((item: any) => ({
-          ...item,
-          timestamp: new Date(item.timestamp)
+        this.allConversations = parsedConversations.map((conv: any) => ({
+          ...conv,
+          startTime: new Date(conv.startTime),
+          messages: conv.messages.map((msg: any) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp)
+          }))
         }));
       } catch (error) {
-        console.error('Error loading conversation history:', error);
-        // Clear corrupted data
-        localStorage.removeItem('diya_conversation_history');
+        console.error('Error loading conversations:', error);
+        localStorage.removeItem('diya_all_conversations');
+        this.allConversations = [];
       }
+    }
+
+    // Load current conversation ID
+    const savedCurrentId = localStorage.getItem('diya_current_conversation_id');
+    if (savedCurrentId && this.allConversations.find(c => c.id === savedCurrentId)) {
+      this.currentConversationId = savedCurrentId;
+      const currentConv = this.allConversations.find(c => c.id === savedCurrentId);
+      if (currentConv) {
+        this.conversationHistory = currentConv.messages;
+      }
+    } else {
+      this.startNewConversation();
+    }
+  }
+
+  private startNewConversation() {
+    const newId = Date.now().toString();
+    const newConversation: Conversation = {
+      id: newId,
+      topic: 'New Conversation',
+      startTime: new Date(),
+      messages: []
+    };
+
+    this.allConversations = [...this.allConversations, newConversation];
+    this.currentConversationId = newId;
+    this.conversationHistory = newConversation.messages;
+    this.viewingPastConversation = false;
+
+    this.saveConversations();
+    localStorage.setItem('diya_current_conversation_id', newId);
+  }
+
+  private saveConversations() {
+    localStorage.setItem('diya_all_conversations', JSON.stringify(this.allConversations));
+  }
+
+  private selectConversation(id: string) {
+    const conversation = this.allConversations.find(c => c.id === id);
+    if (conversation) {
+      this.selectedConversationId = id;
+      this.conversationHistory = conversation.messages;
+      this.viewingPastConversation = id !== this.currentConversationId;
+    }
+  }
+
+  private returnToCurrentConversation() {
+    if (this.currentConversationId) {
+      this.selectConversation(this.currentConversationId);
+      this.selectedConversationId = null;
+    }
+  }
+
+  private clearAllHistory() {
+    this.allConversations = [];
+    this.conversationHistory = [];
+    this.currentConversationId = null;
+    this.selectedConversationId = null;
+    this.viewingPastConversation = false;
+    
+    localStorage.removeItem('diya_all_conversations');
+    localStorage.removeItem('diya_current_conversation_id');
+    
+    this.startNewConversation();
+  }
+
+  private addMessageToCurrentConversation(speaker: string, text: string) {
+    if (!this.currentConversationId) return;
+
+    const message: ConversationMessage = {
+      speaker,
+      text,
+      timestamp: new Date()
+    };
+
+    // Find current conversation and add message
+    const convIndex = this.allConversations.findIndex(c => c.id === this.currentConversationId);
+    if (convIndex !== -1) {
+      this.allConversations[convIndex].messages.push(message);
+      
+      // Update topic if this is the first user message
+      if (speaker === 'user' && 
+          this.allConversations[convIndex].messages.length === 1 && 
+          this.allConversations[convIndex].topic === 'New Conversation') {
+        this.allConversations[convIndex].topic = text.length > 50 ? text.substring(0, 50) + '...' : text;
+      }
+
+      // Update conversation history if we're viewing the current conversation
+      if (!this.viewingPastConversation) {
+        this.conversationHistory = [...this.allConversations[convIndex].messages];
+      }
+
+      this.saveConversations();
     }
   }
 
@@ -427,6 +649,7 @@ export class GdmLiveAudio extends LitElement {
     // Hide form and initialize the client
     this.showPersonalizationForm = false;
     this.error = '';
+    this.loadConversations();
     this.initClient();
   }
 
@@ -460,31 +683,13 @@ export class GdmLiveAudio extends LitElement {
             // Handle user input transcription
             const userContent = message.userContent;
             if (userContent?.text && userContent?.isFinal) {
-              this.conversationHistory = [
-                ...this.conversationHistory,
-                {
-                  speaker: 'user',
-                  text: userContent.text,
-                  timestamp: new Date()
-                }
-              ];
-              // Save updated history to localStorage
-              localStorage.setItem('diya_conversation_history', JSON.stringify(this.conversationHistory));
+              this.addMessageToCurrentConversation('user', userContent.text);
             }
 
             // Handle Diya's response transcription
             const modelTurn = message.serverContent?.modelTurn;
             if (modelTurn?.parts?.[0]?.text && modelTurn?.isFinal) {
-              this.conversationHistory = [
-                ...this.conversationHistory,
-                {
-                  speaker: 'diya',
-                  text: modelTurn.parts[0].text,
-                  timestamp: new Date()
-                }
-              ];
-              // Save updated history to localStorage
-              localStorage.setItem('diya_conversation_history', JSON.stringify(this.conversationHistory));
+              this.addMessageToCurrentConversation('diya', modelTurn.parts[0].text);
             }
 
             const audio =
@@ -634,19 +839,34 @@ export class GdmLiveAudio extends LitElement {
 
   private reset() {
     this.session?.close();
-    this.conversationHistory = [];
-    // Clear conversation history from localStorage
-    localStorage.removeItem('diya_conversation_history');
+    this.startNewConversation();
     this.initSession();
-    this.updateStatus('Session cleared.');
+    this.updateStatus('New conversation started.');
   }
 
   private toggleHistory() {
     this.showHistory = !this.showHistory;
+    if (!this.showHistory && this.viewingPastConversation) {
+      this.returnToCurrentConversation();
+    }
   }
 
   private formatTimestamp(date: Date): string {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  private formatDate(date: Date): string {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const messageDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    
+    if (messageDate.getTime() === today.getTime()) {
+      return `Today, ${this.formatTimestamp(date)}`;
+    } else if (messageDate.getTime() === today.getTime() - 86400000) {
+      return `Yesterday, ${this.formatTimestamp(date)}`;
+    } else {
+      return date.toLocaleDateString() + ', ' + this.formatTimestamp(date);
+    }
   }
 
   render() {
@@ -737,24 +957,70 @@ export class GdmLiveAudio extends LitElement {
         ${this.showHistory ? html`
           <div class="history-panel">
             <div class="history-header">
-              <h3>Conversation History</h3>
+              <h3>${this.selectedConversationId ? 'Conversation' : 'Conversation History'}</h3>
               <button class="history-close" @click=${this.toggleHistory}>×</button>
             </div>
+            
+            ${this.selectedConversationId ? html`
+              <div class="back-button" @click=${() => {
+                this.selectedConversationId = null;
+                if (this.viewingPastConversation) {
+                  this.returnToCurrentConversation();
+                }
+              }}>
+                ← Back to Conversations
+              </div>
+            ` : ''}
+
             <div class="history-content">
-              ${this.conversationHistory.length === 0 ? html`
-                <div class="history-empty">
-                  No conversation history yet. Start talking with Diya to see your transcripts here.
+              ${this.selectedConversationId ? html`
+                <div class="conversation-messages">
+                  ${this.conversationHistory.length === 0 ? html`
+                    <div class="history-empty">
+                      No messages in this conversation yet.
+                    </div>
+                  ` : this.conversationHistory.map(item => html`
+                    <div class="history-item">
+                      <div class="history-speaker ${item.speaker}">
+                        <span>${item.speaker === 'user' ? 'You' : 'Diya'}:</span>
+                        <span class="history-timestamp">${this.formatTimestamp(item.timestamp)}</span>
+                      </div>
+                      <p class="history-text">${item.text}</p>
+                    </div>
+                  `)}
                 </div>
-              ` : this.conversationHistory.map(item => html`
-                <div class="history-item">
-                  <div class="history-speaker ${item.speaker}">
-                    <span>${item.speaker === 'user' ? 'You' : 'Diya'}:</span>
-                    <span class="history-timestamp">${this.formatTimestamp(item.timestamp)}</span>
-                  </div>
-                  <p class="history-text">${item.text}</p>
+              ` : html`
+                <div class="conversation-list">
+                  ${this.allConversations.length === 0 ? html`
+                    <div class="history-empty">
+                      No conversations yet. Start talking with Diya to create your first conversation.
+                    </div>
+                  ` : this.allConversations
+                    .sort((a, b) => b.startTime.getTime() - a.startTime.getTime())
+                    .map(conv => html`
+                    <div 
+                      class="conversation-item ${conv.id === this.currentConversationId ? 'active' : ''}"
+                      @click=${() => this.selectConversation(conv.id)}>
+                      <div class="conversation-topic">${conv.topic}</div>
+                      <div class="conversation-time">${this.formatDate(conv.startTime)}</div>
+                    </div>
+                  `)}
                 </div>
-              `)}
+              `}
             </div>
+
+            ${!this.selectedConversationId ? html`
+              <div class="history-actions">
+                ${this.viewingPastConversation ? html`
+                  <button class="history-action-btn primary" @click=${this.returnToCurrentConversation}>
+                    Return to Current
+                  </button>
+                ` : ''}
+                <button class="history-action-btn danger" @click=${this.clearAllHistory}>
+                  Clear All History
+                </button>
+              </div>
+            ` : ''}
           </div>
         ` : ''}
         
