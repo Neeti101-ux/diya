@@ -395,6 +395,23 @@ export class GdmLiveAudio extends LitElement {
     } else {
       this.showPersonalizationForm = true;
     }
+
+    // Load conversation history from localStorage
+    const savedHistory = localStorage.getItem('diya_conversation_history');
+    if (savedHistory) {
+      try {
+        const parsedHistory = JSON.parse(savedHistory);
+        // Convert timestamp strings back to Date objects
+        this.conversationHistory = parsedHistory.map((item: any) => ({
+          ...item,
+          timestamp: new Date(item.timestamp)
+        }));
+      } catch (error) {
+        console.error('Error loading conversation history:', error);
+        // Clear corrupted data
+        localStorage.removeItem('diya_conversation_history');
+      }
+    }
   }
 
   private async handlePersonalizationSubmit() {
@@ -451,6 +468,8 @@ export class GdmLiveAudio extends LitElement {
                   timestamp: new Date()
                 }
               ];
+              // Save updated history to localStorage
+              localStorage.setItem('diya_conversation_history', JSON.stringify(this.conversationHistory));
             }
 
             // Handle Diya's response transcription
@@ -464,6 +483,8 @@ export class GdmLiveAudio extends LitElement {
                   timestamp: new Date()
                 }
               ];
+              // Save updated history to localStorage
+              localStorage.setItem('diya_conversation_history', JSON.stringify(this.conversationHistory));
             }
 
             const audio =
@@ -614,6 +635,8 @@ export class GdmLiveAudio extends LitElement {
   private reset() {
     this.session?.close();
     this.conversationHistory = [];
+    // Clear conversation history from localStorage
+    localStorage.removeItem('diya_conversation_history');
     this.initSession();
     this.updateStatus('Session cleared.');
   }
