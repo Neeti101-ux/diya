@@ -8,22 +8,21 @@ export default defineConfig(({ mode }) => {
     const apiKeys = [];
     let keyIndex = 1;
     
-    // Check for numbered API keys (GEMINI_API_KEY_1, GEMINI_API_KEY_2, etc.)
-    while (env[`GEMINI_API_KEY_${keyIndex}`]) {
-      apiKeys.push(env[`GEMINI_API_KEY_${keyIndex}`]);
+    // Check for numbered API keys (VITE_GEMINI_API_KEY_1, VITE_GEMINI_API_KEY_2, etc.)
+    while (env[`VITE_GEMINI_API_KEY_${keyIndex}`]) {
+      apiKeys.push(env[`VITE_GEMINI_API_KEY_${keyIndex}`]);
       keyIndex++;
     }
     
-    // If no numbered keys found, fall back to single GEMINI_API_KEY
-    if (apiKeys.length === 0 && env.GEMINI_API_KEY) {
-      apiKeys.push(env.GEMINI_API_KEY);
+    // If no numbered keys found, fall back to single VITE_GEMINI_API_KEY
+    if (apiKeys.length === 0 && env.VITE_GEMINI_API_KEY) {
+      apiKeys.push(env.VITE_GEMINI_API_KEY);
     }
     
     return {
       define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEYS': JSON.stringify(apiKeys)
+        'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY),
+        'import.meta.env.VITE_GEMINI_API_KEYS_JSON': JSON.stringify(JSON.stringify(apiKeys))
       },
       resolve: {
         alias: {

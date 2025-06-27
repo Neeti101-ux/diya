@@ -764,24 +764,24 @@ export class GdmLiveAudio extends LitElement {
     
     // Initialize API keys
     try {
-      const apiKeysString = process.env.GEMINI_API_KEYS;
+      const apiKeysString = import.meta.env.VITE_GEMINI_API_KEYS_JSON;
       if (apiKeysString) {
         this.apiKeys = JSON.parse(apiKeysString);
       }
       
       // Fallback to single API key if no array found
-      if (this.apiKeys.length === 0 && process.env.GEMINI_API_KEY) {
-        this.apiKeys = [process.env.GEMINI_API_KEY];
+      if (this.apiKeys.length === 0 && import.meta.env.VITE_GEMINI_API_KEY) {
+        this.apiKeys = [import.meta.env.VITE_GEMINI_API_KEY];
       }
       
       if (this.apiKeys.length === 0) {
-        console.error('No API keys found. Please set GEMINI_API_KEY or GEMINI_API_KEY_1, GEMINI_API_KEY_2, etc.');
+        console.error('No API keys found. Please set VITE_GEMINI_API_KEY or VITE_GEMINI_API_KEY_1, VITE_GEMINI_API_KEY_2, etc.');
       }
     } catch (error) {
       console.error('Error parsing API keys:', error);
       // Fallback to single API key
-      if (process.env.GEMINI_API_KEY) {
-        this.apiKeys = [process.env.GEMINI_API_KEY];
+      if (import.meta.env.VITE_GEMINI_API_KEY) {
+        this.apiKeys = [import.meta.env.VITE_GEMINI_API_KEY];
       }
     }
     

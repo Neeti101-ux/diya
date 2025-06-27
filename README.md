@@ -50,7 +50,7 @@ Diya is a comprehensive AI assistant developed by UB Intelligence, designed as t
    ```
 3. Create a `.env.local` file in the root directory and add your Gemini API key:
    ```
-   GEMINI_API_KEY=your_api_key_here
+   VITE_GEMINI_API_KEY=your_api_key_here
    ```
 
 ## Running Locally
