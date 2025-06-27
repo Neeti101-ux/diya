@@ -18,6 +18,8 @@ export class GdmLiveAudio extends LitElement {
   @state() username = '';
   @state() occupation = '';
   @state() showPersonalizationForm = true;
+  @state() conversationHistory: Array<{speaker: string, text: string, timestamp: Date}> = [];
+  @state() showHistory = false;
 
   private client: GoogleGenAI;
   private session: Session;
@@ -103,6 +105,16 @@ export class GdmLiveAudio extends LitElement {
 
       button[disabled] {
         display: none;
+      }
+
+      button#historyButton {
+        background: #8B5CF6;
+        box-shadow: 0 4px 6px rgba(139, 92, 246, 0.25);
+      }
+
+      button#historyButton:hover {
+        background: #7C3AED;
+        transform: translateY(-2px);
       }
     }
 
@@ -250,6 +262,122 @@ export class GdmLiveAudio extends LitElement {
       align-items: center;
       justify-content: center;
     }
+
+    .history-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 400px;
+      max-height: 70vh;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .history-header {
+      padding: 20px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    .history-header h3 {
+      margin: 0;
+      color: #1a1a1a;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .history-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #666;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .history-close:hover {
+      background: rgba(0, 0, 0, 0.1);
+      color: #333;
+    }
+
+    .history-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0;
+    }
+
+    .history-item {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .history-item:last-child {
+      border-bottom: none;
+    }
+
+    .history-speaker {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .history-speaker.user {
+      color: #059669;
+    }
+
+    .history-speaker.diya {
+      color: #8B5CF6;
+    }
+
+    .history-timestamp {
+      font-size: 12px;
+      color: #666;
+      font-weight: 400;
+    }
+
+    .history-text {
+      color: #333;
+      font-size: 14px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .history-empty {
+      padding: 40px 20px;
+      text-align: center;
+      color: #666;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .history-panel {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+        max-height: 60vh;
+      }
+    }
   `;
 
   constructor() {
@@ -312,6 +440,32 @@ export class GdmLiveAudio extends LitElement {
             this.updateStatus('Opened');
           },
           onmessage: async (message: LiveServerMessage) => {
+            // Handle user input transcription
+            const userContent = message.userContent;
+            if (userContent?.text && userContent?.isFinal) {
+              this.conversationHistory = [
+                ...this.conversationHistory,
+                {
+                  speaker: 'user',
+                  text: userContent.text,
+                  timestamp: new Date()
+                }
+              ];
+            }
+
+            // Handle Diya's response transcription
+            const modelTurn = message.serverContent?.modelTurn;
+            if (modelTurn?.parts?.[0]?.text && modelTurn?.isFinal) {
+              this.conversationHistory = [
+                ...this.conversationHistory,
+                {
+                  speaker: 'diya',
+                  text: modelTurn.parts[0].text,
+                  timestamp: new Date()
+                }
+              ];
+            }
+
             const audio =
               message.serverContent?.modelTurn?.parts[0]?.inlineData;
 
@@ -459,8 +613,17 @@ export class GdmLiveAudio extends LitElement {
 
   private reset() {
     this.session?.close();
+    this.conversationHistory = [];
     this.initSession();
     this.updateStatus('Session cleared.');
+  }
+
+  private toggleHistory() {
+    this.showHistory = !this.showHistory;
+  }
+
+  private formatTimestamp(date: Date): string {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
   render() {
@@ -517,6 +680,13 @@ export class GdmLiveAudio extends LitElement {
       <div>
         <div class="controls">
           <button
+            id="historyButton"
+            @click=${this.toggleHistory}
+            ?disabled=${this.isRecording}
+            title="View Conversation History">
+            📜
+          </button>
+          <button
             id="resetButton"
             @click=${this.reset}
             ?disabled=${this.isRecording}>
@@ -540,6 +710,30 @@ export class GdmLiveAudio extends LitElement {
         <gdm-live-audio-visuals-3d
           .inputNode=${this.inputNode}
           .outputNode=${this.outputNode}></gdm-live-audio-visuals-3d>
+        
+        ${this.showHistory ? html`
+          <div class="history-panel">
+            <div class="history-header">
+              <h3>Conversation History</h3>
+              <button class="history-close" @click=${this.toggleHistory}>×</button>
+            </div>
+            <div class="history-content">
+              ${this.conversationHistory.length === 0 ? html`
+                <div class="history-empty">
+                  No conversation history yet. Start talking with Diya to see your transcripts here.
+                </div>
+              ` : this.conversationHistory.map(item => html`
+                <div class="history-item">
+                  <div class="history-speaker ${item.speaker}">
+                    <span>${item.speaker === 'user' ? 'You' : 'Diya'}:</span>
+                    <span class="history-timestamp">${this.formatTimestamp(item.timestamp)}</span>
+                  </div>
+                  <p class="history-text">${item.text}</p>
+                </div>
+              `)}
+            </div>
+          </div>
+        ` : ''}
         
         <div class="footer">
           © 2025 <a href="https://ubintelligence.tech/" target="_blank">UB Intelligence</a>. AI Companion.
