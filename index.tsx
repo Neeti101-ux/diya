@@ -40,6 +40,10 @@ export class GdmLiveAudio extends LitElement {
   @state() viewingPastConversation = false;
   @state() selectedConversationId: string | null = null;
 
+  // API key management
+  private apiKeys: string[] = [];
+  @state() currentApiKeyIndex = 0;
+
   // Available AI models in order of preference
   private availableModels = [
     'gemini-2.5-flash-preview-native-audio-dialog', // Primary model
@@ -758,6 +762,29 @@ export class GdmLiveAudio extends LitElement {
   constructor() {
     super();
     
+    // Initialize API keys
+    try {
+      const apiKeysString = process.env.GEMINI_API_KEYS;
+      if (apiKeysString) {
+        this.apiKeys = JSON.parse(apiKeysString);
+      }
+      
+      // Fallback to single API key if no array found
+      if (this.apiKeys.length === 0 && process.env.GEMINI_API_KEY) {
+        this.apiKeys = [process.env.GEMINI_API_KEY];
+      }
+      
+      if (this.apiKeys.length === 0) {
+        console.error('No API keys found. Please set GEMINI_API_KEY or GEMINI_API_KEY_1, GEMINI_API_KEY_2, etc.');
+      }
+    } catch (error) {
+      console.error('Error parsing API keys:', error);
+      // Fallback to single API key
+      if (process.env.GEMINI_API_KEY) {
+        this.apiKeys = [process.env.GEMINI_API_KEY];
+      }
+    }
+    
     // Check localStorage for existing personalization data
     const savedUsername = localStorage.getItem('diya_username');
     const savedOccupation = localStorage.getItem('diya_occupation');
@@ -947,10 +974,6 @@ export class GdmLiveAudio extends LitElement {
   private async initClient() {
     this.initAudio();
 
-    this.client = new GoogleGenAI({
-      apiKey: process.env.GEMINI_API_KEY,
-    });
-
     this.outputNode.connect(this.outputAudioContext.destination);
 
     this.initSession();
@@ -961,31 +984,57 @@ export class GdmLiveAudio extends LitElement {
   }
 
   private async connectWithFallback() {
-    for (let i = this.currentModelIndex; i < this.availableModels.length; i++) {
-      const model = this.availableModels[i];
-      this.currentModel = model;
-      this.currentModelIndex = i;
+    // Try each API key
+    for (let apiKeyIndex = this.currentApiKeyIndex; apiKeyIndex < this.apiKeys.length; apiKeyIndex++) {
+      this.currentApiKeyIndex = apiKeyIndex;
+      const apiKey = this.apiKeys[apiKeyIndex];
       
-      this.updateStatus(`Connecting to ${this.getModelDisplayName(model)}...`);
+      // Initialize client with current API key
+      this.client = new GoogleGenAI({
+        apiKey: apiKey,
+      });
       
-      try {
-        await this.connectToModel(model);
-        this.updateStatus(`Connected to ${this.getModelDisplayName(model)}`);
-        return; // Successfully connected
-      } catch (error) {
-        console.warn(`Failed to connect to ${model}:`, error);
+      const apiKeyDisplay = this.apiKeys.length > 1 ? ` (Key ${apiKeyIndex + 1}/${this.apiKeys.length})` : '';
+      
+      // Try each model with current API key
+      for (let modelIndex = this.currentModelIndex; modelIndex < this.availableModels.length; modelIndex++) {
+        const model = this.availableModels[modelIndex];
+        this.currentModel = model;
+        this.currentModelIndex = modelIndex;
         
-        if (i === this.availableModels.length - 1) {
-          // All models failed
-          this.updateError(`Unable to connect to any AI model. Please check your internet connection and try again.`);
-          return;
-        } else {
-          // Try next model
-          this.updateStatus(`${this.getModelDisplayName(model)} unavailable, trying next model...`);
-          await new Promise(resolve => setTimeout(resolve, 1000)); // Brief delay before trying next model
+        this.updateStatus(`Connecting to ${this.getModelDisplayName(model)}${apiKeyDisplay}...`);
+        
+        try {
+          await this.connectToModel(model);
+          this.updateStatus(`Connected to ${this.getModelDisplayName(model)}${apiKeyDisplay}`);
+          return; // Successfully connected
+        } catch (error) {
+          console.warn(`Failed to connect to ${model} with API key ${apiKeyIndex + 1}:`, error);
+          
+          // Check if it's a quota/auth error that suggests trying next API key
+          const errorMessage = error.message.toLowerCase();
+          const isQuotaError = errorMessage.includes('quota') || 
+                              errorMessage.includes('limit') || 
+                              errorMessage.includes('exceeded') ||
+                              errorMessage.includes('unauthorized') ||
+                              errorMessage.includes('forbidden');
+          
+          if (isQuotaError && apiKeyIndex < this.apiKeys.length - 1) {
+            // Skip remaining models for this API key and try next API key
+            this.updateStatus(`API key ${apiKeyIndex + 1} quota exceeded, trying next key...`);
+            this.currentModelIndex = 0; // Reset model index for next API key
+            break;
+          } else if (modelIndex < this.availableModels.length - 1) {
+            // Try next model with same API key
+            this.updateStatus(`${this.getModelDisplayName(model)} unavailable, trying next model...`);
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Brief delay before trying next model
+          }
         }
       }
     }
+    
+    // All API keys and models failed
+    this.updateError(`Unable to connect to any AI model with available API keys. Please check your API keys and internet connection.`);
   }
 
   private getModelDisplayName(model: string): string {
@@ -1196,7 +1245,8 @@ export class GdmLiveAudio extends LitElement {
     this.session?.close();
     this.startNewConversation();
     
-    // Reset to primary model for new conversation
+    // Reset to primary API key and model for new conversation
+    this.currentApiKeyIndex = 0;
     this.currentModelIndex = 0;
     this.currentModel = this.availableModels[0];
     
@@ -1209,8 +1259,19 @@ export class GdmLiveAudio extends LitElement {
       this.session.close();
     }
     
-    // Try next model in the list
-    this.currentModelIndex = Math.min(this.currentModelIndex + 1, this.availableModels.length - 1);
+    // Advance to next API key or model
+    if (this.currentModelIndex < this.availableModels.length - 1) {
+      // Try next model with current API key
+      this.currentModelIndex++;
+    } else if (this.currentApiKeyIndex < this.apiKeys.length - 1) {
+      // Try next API key with first model
+      this.currentApiKeyIndex++;
+      this.currentModelIndex = 0;
+    } else {
+      // Reset to first API key and model
+      this.currentApiKeyIndex = 0;
+      this.currentModelIndex = 0;
+    }
     
     this.updateStatus('Retrying connection...');
     await this.connectWithFallback();
@@ -1373,8 +1434,11 @@ export class GdmLiveAudio extends LitElement {
 
         <div id="status">
           ${this.error || this.status}
-          ${!this.error && this.currentModelIndex > 0 ? html`
-            <br><small style="opacity: 0.7;">Using ${this.getModelDisplayName(this.currentModel)}</small>
+          ${!this.error && (this.currentModelIndex > 0 || this.currentApiKeyIndex > 0) ? html`
+            <br><small style="opacity: 0.7;">
+              Using ${this.getModelDisplayName(this.currentModel)}
+              ${this.apiKeys.length > 1 ? ` (Key ${this.currentApiKeyIndex + 1}/${this.apiKeys.length})` : ''}
+            </small>
           ` : ''}
         </div>
         <gdm-live-audio-visuals-3d
