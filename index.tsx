@@ -64,10 +64,10 @@ export class GdmLiveAudio extends LitElement {
         border: none;
         color: #ffffff;
         border-radius: 12px;
-        width: 64px;
-        height: 64px;
+        width: 48px;
+        height: 48px;
         cursor: pointer;
-        font-size: 24px;
+        font-size: 18px;
         padding: 0;
         margin: 0;
         transition: all 0.3s ease;
