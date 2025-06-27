@@ -40,6 +40,16 @@ export class GdmLiveAudio extends LitElement {
   @state() viewingPastConversation = false;
   @state() selectedConversationId: string | null = null;
 
+  // Available AI models in order of preference
+  private availableModels = [
+    'gemini-2.5-flash-preview-native-audio-dialog', // Primary model
+    'gemini-2.5-flash-exp-native-audio-thinking-dialog', // Fallback with thinking capability
+    'gemini-live-2.5-flash-preview', // Broader Live API model
+    'gemini-2.0-flash-live-001' // Previous iteration
+  ];
+  @state() currentModelIndex = 0;
+  @state() currentModel = this.availableModels[0];
+
   private client: GoogleGenAI;
   private session: Session;
   private inputAudioContext = new (window.AudioContext ||
@@ -947,14 +957,60 @@ export class GdmLiveAudio extends LitElement {
   }
 
   private async initSession() {
-    const model = 'gemini-2.5-flash-preview-native-audio-dialog';
+    await this.connectWithFallback();
+  }
 
-    try {
+  private async connectWithFallback() {
+    for (let i = this.currentModelIndex; i < this.availableModels.length; i++) {
+      const model = this.availableModels[i];
+      this.currentModel = model;
+      this.currentModelIndex = i;
+      
+      this.updateStatus(`Connecting to ${this.getModelDisplayName(model)}...`);
+      
+      try {
+        await this.connectToModel(model);
+        this.updateStatus(`Connected to ${this.getModelDisplayName(model)}`);
+        return; // Successfully connected
+      } catch (error) {
+        console.warn(`Failed to connect to ${model}:`, error);
+        
+        if (i === this.availableModels.length - 1) {
+          // All models failed
+          this.updateError(`Unable to connect to any AI model. Please check your internet connection and try again.`);
+          return;
+        } else {
+          // Try next model
+          this.updateStatus(`${this.getModelDisplayName(model)} unavailable, trying next model...`);
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Brief delay before trying next model
+        }
+      }
+    }
+  }
+
+  private getModelDisplayName(model: string): string {
+    const displayNames = {
+      'gemini-2.5-flash-preview-native-audio-dialog': 'Gemini 2.5 Flash (Primary)',
+      'gemini-2.5-flash-exp-native-audio-thinking-dialog': 'Gemini 2.5 Flash Thinking',
+      'gemini-live-2.5-flash-preview': 'Gemini Live 2.5 Flash',
+      'gemini-2.0-flash-live-001': 'Gemini 2.0 Flash Live'
+    };
+    return displayNames[model] || model;
+  }
+
+  private async connectToModel(model: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      let connectionTimeout: NodeJS.Timeout;
+      let isResolved = false;
       this.session = await this.client.live.connect({
         model: model,
         callbacks: {
           onopen: () => {
-            this.updateStatus('Opened');
+            if (!isResolved) {
+              isResolved = true;
+              clearTimeout(connectionTimeout);
+              resolve();
+            }
           },
           onmessage: async (message: LiveServerMessage) => {
             // Handle user input transcription
@@ -1006,10 +1062,18 @@ export class GdmLiveAudio extends LitElement {
             }
           },
           onerror: (e: ErrorEvent) => {
-            this.updateError(e.message);
+            if (!isResolved) {
+              isResolved = true;
+              clearTimeout(connectionTimeout);
+              reject(new Error(e.message));
+            }
           },
           onclose: (e: CloseEvent) => {
-            this.updateStatus('Close:' + e.reason);
+            if (!isResolved) {
+              isResolved = true;
+              clearTimeout(connectionTimeout);
+              reject(new Error(`Connection closed: ${e.reason}`));
+            }
           },
         },
         config: {
@@ -1033,9 +1097,15 @@ export class GdmLiveAudio extends LitElement {
           When relevant to the conversation, you may suggest searching for information about their company or industry to provide more targeted advice. Use the provided context to make your guidance more specific and actionable for their particular business situation.`
         },
       });
-    } catch (e) {
-      console.error(e);
-    }
+
+      // Set a timeout for connection attempts
+      connectionTimeout = setTimeout(() => {
+        if (!isResolved) {
+          isResolved = true;
+          reject(new Error('Connection timeout'));
+        }
+      }, 10000); // 10 second timeout
+    });
   }
 
   private updateStatus(msg: string) {
@@ -1123,8 +1193,25 @@ export class GdmLiveAudio extends LitElement {
   private reset() {
     this.session?.close();
     this.startNewConversation();
+    
+    // Reset to primary model for new conversation
+    this.currentModelIndex = 0;
+    this.currentModel = this.availableModels[0];
+    
     this.initSession();
-    this.updateStatus('New conversation started.');
+    this.updateStatus('Starting new conversation...');
+  }
+
+  private async retryConnection() {
+    if (this.session) {
+      this.session.close();
+    }
+    
+    // Try next model in the list
+    this.currentModelIndex = Math.min(this.currentModelIndex + 1, this.availableModels.length - 1);
+    
+    this.updateStatus('Retrying connection...');
+    await this.connectWithFallback();
   }
 
   private toggleHistory() {
@@ -1271,9 +1358,23 @@ export class GdmLiveAudio extends LitElement {
             ?disabled=${!this.isRecording}>
             ■
           </button>
+          ${this.error && this.error.includes('Unable to connect') ? html`
+            <button
+              id="retryButton"
+              @click=${this.retryConnection}
+              title="Retry Connection"
+              style="background: #F59E0B; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.25);">
+              🔄
+            </button>
+          ` : ''}
         </div>
 
-        <div id="status"> ${this.error || this.status} </div>
+        <div id="status">
+          ${this.error || this.status}
+          ${!this.error && this.currentModelIndex > 0 ? html`
+            <br><small style="opacity: 0.7;">Using ${this.getModelDisplayName(this.currentModel)}</small>
+          ` : ''}
+        </div>
         <gdm-live-audio-visuals-3d
           .inputNode=${this.inputNode}
           .outputNode=${this.outputNode}></gdm-live-audio-visuals-3d>
