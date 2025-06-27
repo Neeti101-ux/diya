@@ -1048,10 +1048,19 @@ export class GdmLiveAudio extends LitElement {
   }
 
   private async connectToModel(model: string): Promise<void> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       let connectionTimeout: NodeJS.Timeout;
       let isResolved = false;
-      this.session = await this.client.live.connect({
+      
+      // Set a timeout for connection attempts
+      connectionTimeout = setTimeout(() => {
+        if (!isResolved) {
+          isResolved = true;
+          reject(new Error('Connection timeout'));
+        }
+      }, 10000); // 10 second timeout
+      
+      this.client.live.connect({
         model: model,
         callbacks: {
           onopen: () => {
@@ -1147,15 +1156,15 @@ export class GdmLiveAudio extends LitElement {
           
           When relevant to the conversation, you may suggest searching for information about their company or industry to provide more targeted advice. Use the provided context to make your guidance more specific and actionable for their particular business situation.`
         },
-      });
-
-      // Set a timeout for connection attempts
-      connectionTimeout = setTimeout(() => {
+      }).then((session) => {
+        this.session = session;
+      }).catch((error) => {
         if (!isResolved) {
           isResolved = true;
-          reject(new Error('Connection timeout'));
+          clearTimeout(connectionTimeout);
+          reject(error);
         }
-      }, 10000); // 10 second timeout
+      });
     });
   }
 
