@@ -30,6 +30,8 @@ export class GdmLiveAudio extends LitElement {
   @state() error = '';
   @state() username = '';
   @state() occupation = '';
+  @state() companyWebsite = '';
+  @state() linkedinProfile = '';
   @state() showPersonalizationForm = true;
   @state() conversationHistory: ConversationMessage[] = [];
   @state() showHistory = false;
@@ -508,10 +510,14 @@ export class GdmLiveAudio extends LitElement {
     // Check localStorage for existing personalization data
     const savedUsername = localStorage.getItem('diya_username');
     const savedOccupation = localStorage.getItem('diya_occupation');
+    const savedCompanyWebsite = localStorage.getItem('diya_company_website');
+    const savedLinkedinProfile = localStorage.getItem('diya_linkedin_profile');
     
     if (savedUsername && savedOccupation) {
       this.username = savedUsername;
       this.occupation = savedOccupation;
+      this.companyWebsite = savedCompanyWebsite || '';
+      this.linkedinProfile = savedLinkedinProfile || '';
       this.showPersonalizationForm = false;
       this.loadConversations();
       this.initClient();
@@ -642,9 +648,21 @@ export class GdmLiveAudio extends LitElement {
       return;
     }
 
+    // Validate URLs if provided
+    if (this.companyWebsite.trim() && !this.isValidUrl(this.companyWebsite.trim())) {
+      this.error = 'Please enter a valid company website URL (e.g., https://example.com)';
+      return;
+    }
+
+    if (this.linkedinProfile.trim() && !this.isValidLinkedInUrl(this.linkedinProfile.trim())) {
+      this.error = 'Please enter a valid LinkedIn profile URL (e.g., https://linkedin.com/in/username)';
+      return;
+    }
     // Save to localStorage
     localStorage.setItem('diya_username', this.username);
     localStorage.setItem('diya_occupation', this.occupation);
+    localStorage.setItem('diya_company_website', this.companyWebsite);
+    localStorage.setItem('diya_linkedin_profile', this.linkedinProfile);
     
     // Hide form and initialize the client
     this.showPersonalizationForm = false;
@@ -653,6 +671,24 @@ export class GdmLiveAudio extends LitElement {
     this.initClient();
   }
 
+  private isValidUrl(url: string): boolean {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  }
+
+  private isValidLinkedInUrl(url: string): boolean {
+    try {
+      const urlObj = new URL(url);
+      return (urlObj.hostname === 'linkedin.com' || urlObj.hostname === 'www.linkedin.com') &&
+             (urlObj.pathname.startsWith('/in/') || urlObj.pathname.startsWith('/company/'));
+    } catch {
+      return false;
+    }
+  }
   private initAudio() {
     this.nextStartTime = this.outputAudioContext.currentTime;
   }
@@ -747,7 +783,13 @@ export class GdmLiveAudio extends LitElement {
           ],
           systemInstruction: `You are Diya, a comprehensive AI assistant developed by UB Intelligence, designed as the ultimate companion for entrepreneurs and business builders. Your dual mission encompasses both mental wellness support and strategic business guidance, recognizing that entrepreneurial success requires both emotional resilience and tactical expertise. You serve as a holistic entrepreneurial companion that bridges the gap between mental wellness and business strategy, integrating emotional intelligence with business acumen to understand that sustainable entrepreneurship requires both psychological well-being and strategic clarity. Your primary capabilities include providing empathetic, practical mental health support tailored to entrepreneurial pressures, offering stress management techniques for high-stakes business situations, guiding mindfulness practices that enhance decision-making and leadership presence, analyzing market opportunities and competitive landscapes specifically for the Indian market, developing comprehensive sales strategies and customer acquisition frameworks, and providing executive advisory across key functions including CTO support for technology strategy and product development, CFO guidance for financial planning and fundraising, CMO assistance for marketing strategy and brand positioning, and CEO mentorship for strategic decision-making and organizational scaling. Your unique value lies in understanding that business challenges and mental wellness are interconnected, helping entrepreneurs make strategic decisions while managing stress, maintain emotional balance during high-pressure situations, develop resilient leadership skills, and navigate the psychological aspects of executive responsibilities. You possess deep understanding of Indian market dynamics, entrepreneurial psychology, executive challenges, and the startup ecosystem, while maintaining a warm, empathetic tone balanced with business sophistication to ensure entrepreneurs feel both understood and empowered with actionable intelligence for thriving both personally and professionally. When providing information, always search for the most current and accurate information using Google Search to ensure your responses are up-to-date with recent developments, and regulatory changes.
           
-          The user you are speaking with is ${this.username}, who works as a ${this.occupation}. Please personalize your responses and advice based on their name and professional background. Address them by name when appropriate and tailor your business guidance to their specific occupation and industry context.`
+          The user you are speaking with is ${this.username}, who works as a ${this.occupation}. Please personalize your responses and advice based on their name and professional background. Address them by name when appropriate and tailor your business guidance to their specific occupation and industry context.
+          
+          ${this.companyWebsite ? `Their company website is: ${this.companyWebsite}. You can reference this to understand their business better and provide more contextual advice.` : ''}
+          
+          ${this.linkedinProfile ? `Their LinkedIn profile is: ${this.linkedinProfile}. This can help you understand their professional background and network.` : ''}
+          
+          When relevant to the conversation, you may suggest searching for information about their company or industry to provide more targeted advice. Use the provided context to make your guidance more specific and actionable for their particular business situation.`
         },
       });
     } catch (e) {
@@ -899,6 +941,32 @@ export class GdmLiveAudio extends LitElement {
                 .value=${this.occupation}
                 @input=${(e: Event) => {
                   this.occupation = (e.target as HTMLInputElement).value;
+                }}
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="companyWebsite">Company Website <span style="color: #666; font-weight: 400;">(Optional)</span></label>
+              <input
+                type="text"
+                id="companyWebsite"
+                placeholder="https://yourcompany.com"
+                .value=${this.companyWebsite}
+                @input=${(e: Event) => {
+                  this.companyWebsite = (e.target as HTMLInputElement).value;
+                }}
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="linkedinProfile">LinkedIn Profile <span style="color: #666; font-weight: 400;">(Optional)</span></label>
+              <input
+                type="text"
+                id="linkedinProfile"
+                placeholder="https://linkedin.com/in/yourprofile"
+                .value=${this.linkedinProfile}
+                @input=${(e: Event) => {
+                  this.linkedinProfile = (e.target as HTMLInputElement).value;
                 }}
               />
             </div>
