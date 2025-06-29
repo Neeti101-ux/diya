@@ -270,28 +270,28 @@ export class GdmLiveAudio extends LitElement {
     .personalization-form input[type="text"] {
       width: 100%;
       padding: 12px 16px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 12px;
       font-size: 15px;
       font-family: inherit;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       outline: none;
       box-sizing: border-box;
       font-weight: 400;
-      color: rgba(255, 255, 255, 0.95);
+      color: rgba(0, 0, 0, 0.8);
     }
 
     .personalization-form input[type="text"]:focus {
-      border-color: rgba(255, 255, 255, 0.5);
-      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(99, 102, 241, 0.5);
+      background: rgba(255, 255, 255, 0.3);
       box-shadow: 
-        0 0 0 3px rgba(255, 255, 255, 0.1);
+        0 0 0 3px rgba(99, 102, 241, 0.1);
     }
 
     .personalization-form input[type="text"]::placeholder {
-      color: rgba(255, 255, 255, 0.6);
+      color: rgba(0, 0, 0, 0.5);
       font-weight: 400;
     }
 
@@ -303,10 +303,10 @@ export class GdmLiveAudio extends LitElement {
 
     .form-cancel-button {
       flex: 1;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
-      color: rgba(255, 255, 255, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      color: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 12px;
       padding: 12px 24px;
       font-size: 14px;
@@ -317,16 +317,16 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .form-cancel-button:hover {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.4);
     }
 
     .form-submit-button {
       flex: 1;
-      background: rgba(99, 102, 241, 0.8);
-      backdrop-filter: blur(20px);
+      background: rgba(99, 102, 241, 0.9);
+      backdrop-filter: blur(10px);
       color: white;
-      border: 1px solid rgba(99, 102, 241, 0.9);
+      border: 1px solid rgba(99, 102, 241, 1);
       border-radius: 12px;
       padding: 12px 24px;
       font-size: 14px;
@@ -337,20 +337,20 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .form-submit-button:hover {
-      background: rgba(99, 102, 241, 0.9);
+      background: rgba(99, 102, 241, 1);
       border-color: rgba(99, 102, 241, 1);
     }
 
     .form-submit-button:active {
-      background: rgba(99, 102, 241, 0.7);
+      background: rgba(99, 102, 241, 0.8);
     }
 
     .form-status {
       margin-top: 12px;
       padding: 12px 16px;
       border-radius: 12px;
-      font-size: 12px;
-      font-weight: 500;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
       animation: fadeIn 0.3s ease;
     }
 
@@ -358,22 +358,22 @@ export class GdmLiveAudio extends LitElement {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
+      color: rgba(0, 0, 0, 0.6);
     .form-status.error {
       background: rgba(248, 113, 113, 0.15);
       backdrop-filter: blur(20px);
       color: rgba(255, 255, 255, 0.95);
       border: 1px solid rgba(248, 113, 113, 0.3);
-    }
-
+      background: rgba(255, 255, 255, 0.3);
+      color: rgba(0, 0, 0, 0.8);
     .personalization-overlay {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: transparent;
-      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
       z-index: 999;
       display: flex;
       align-items: center;
@@ -383,16 +383,16 @@ export class GdmLiveAudio extends LitElement {
 
     @keyframes overlayFadeIn {
       from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
+      background: rgba(248, 113, 113, 0.2);
+      backdrop-filter: blur(10px);
+      color: rgba(139, 0, 0, 0.9);
     .close-button {
       position: absolute;
       top: 16px;
       right: 16px;
       background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(30px);
       width: 32px;
       height: 32px;
       display: flex;
@@ -601,9 +601,10 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .history-close:hover {
-      background: rgba(0, 0, 0, 0.1);
-      color: #333;
-    }
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.25);
 
     .history-content {
       flex: 1;
@@ -665,7 +666,7 @@ export class GdmLiveAudio extends LitElement {
       border-bottom: none;
     }
 
-    .history-speaker {
+      color: rgba(0, 0, 0, 0.8);
       font-weight: 600;
       font-size: 14px;
       margin-bottom: 6px;
@@ -689,7 +690,7 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .history-text {
-      color: #333;
+      color: rgba(0, 0, 0, 0.6);
       font-size: 14px;
       line-height: 1.5;
       margin: 0;
@@ -752,7 +753,7 @@ export class GdmLiveAudio extends LitElement {
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       background: rgba(255, 255, 255, 0.9);
       cursor: pointer;
-      color: #6366F1;
+      color: rgba(0, 0, 0, 0.7);
       font-weight: 500;
       font-size: 14px;
       transition: all 0.2s ease;
@@ -760,7 +761,7 @@ export class GdmLiveAudio extends LitElement {
 
     .back-button:hover {
       background: rgba(99, 102, 241, 0.1);
-    }
+      color: rgba(0, 0, 0, 0.5);
 
     @media (max-width: 768px) {
       .history-panel {
