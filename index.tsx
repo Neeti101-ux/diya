@@ -1524,6 +1524,9 @@ export class GdmLiveAudio extends LitElement {
                   @input=${(e: Event) => {
                     this.companyWebsite = (e.target as HTMLInputElement).value;
                   }}
+                />
+              </div>
+
               <div class="form-group">
                 <label for="linkedinProfile">LinkedIn Profile <span class="optional">(Optional)</span></label>
                 <input
@@ -1536,7 +1539,7 @@ export class GdmLiveAudio extends LitElement {
                   }}
                 />
               </div>
-                />
+
               <div class="form-buttons">
                 <button
                   class="form-cancel-button"
@@ -1548,7 +1551,6 @@ export class GdmLiveAudio extends LitElement {
                   @click=${this.handlePersonalizationSubmit}>
                   Start Your Journey
                 </button>
-              </div>
               </div>
               ${this.error ? html`
                 <div class="form-status error">
