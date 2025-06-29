@@ -1260,6 +1260,9 @@ export class GdmLiveAudio extends LitElement {
       this.scriptProcessorNode.onaudioprocess = (audioProcessingEvent) => {
         if (!this.isRecording) return;
 
+        // Defensive check to ensure session is initialized
+        if (!this.session) return;
+
         const inputBuffer = audioProcessingEvent.inputBuffer;
         const pcmData = inputBuffer.getChannelData(0);
 
@@ -1465,7 +1468,7 @@ export class GdmLiveAudio extends LitElement {
           <button
             id="startButton"
             @click=${this.startRecording}
-            ?disabled=${this.isRecording}>
+            ?disabled=${this.isRecording || this.status !== 'Connected'}>
             ●
           </button>
           <button
