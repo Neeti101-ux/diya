@@ -194,16 +194,15 @@ export class GdmLiveAudio extends LitElement {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(20px);
-      border-radius: 24px;
-      padding: 32px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(40px);
+      border-radius: 20px;
+      padding: 40px;
       box-shadow: 
-        0 32px 64px rgba(0, 0, 0, 0.1),
-        0 0 0 1px rgba(255, 255, 255, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      max-width: 480px;
+        0 8px 32px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      max-width: 420px;
       width: 90%;
       max-height: 90vh;
       overflow-y: auto;
@@ -224,58 +223,59 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .personalization-form h2 {
-      margin: 0 0 6px 0;
-      color: rgba(255, 255, 255, 0.95);
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.8px;
+      margin: 0 0 8px 0;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
       line-height: 1.2;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .personalization-form p {
-      margin: 0 0 24px 0;
+      margin: 0 0 32px 0;
       color: rgba(255, 255, 255, 0.8);
-      font-size: 15px;
+      font-size: 14px;
       line-height: 1.5;
       font-weight: 400;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     .form-group {
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       text-align: left;
       position: relative;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       color: rgba(255, 255, 255, 0.9);
-      font-weight: 600;
-      font-size: 13px;
-      letter-spacing: 0.2px;
-      text-transform: uppercase;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0px;
+      text-transform: none;
     }
 
     .form-group label .optional {
       color: rgba(255, 255, 255, 0.6);
       font-weight: 400;
       text-transform: none;
-      font-size: 11px;
+      font-size: 12px;
       margin-left: 4px;
     }
 
     .personalization-form input[type="text"] {
       width: 100%;
-      padding: 14px 16px;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
+      padding: 12px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
       font-size: 15px;
       font-family: inherit;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(20px);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       outline: none;
       box-sizing: border-box;
@@ -284,63 +284,73 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .personalization-form input[type="text"]:focus {
-      border-color: rgba(255, 255, 255, 0.4);
-      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
       box-shadow: 
-        0 0 0 4px rgba(255, 255, 255, 0.1),
-        0 4px 12px rgba(255, 255, 255, 0.15);
-      transform: translateY(-1px);
+        0 0 0 3px rgba(255, 255, 255, 0.1);
     }
 
     .personalization-form input[type="text"]::placeholder {
-      color: rgba(255, 255, 255, 0.5);
+      color: rgba(255, 255, 255, 0.6);
       font-weight: 400;
     }
 
-    .form-submit-button {
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      border-radius: 16px;
-      padding: 16px 32px;
-      font-size: 16px;
-      font-weight: 600;
+    .form-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .form-cancel-button {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 500;
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 
-        0 8px 16px rgba(0, 0, 0, 0.2),
-        0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-top: 12px;
-      width: 100%;
-      letter-spacing: 0.3px;
-      position: relative;
-      overflow: hidden;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      letter-spacing: 0.2px;
+    }
+
+    .form-cancel-button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .form-submit-button {
+      flex: 1;
+      background: rgba(99, 102, 241, 0.8);
+      backdrop-filter: blur(20px);
+      color: white;
+      border: 1px solid rgba(99, 102, 241, 0.9);
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: 0.2px;
     }
 
     .form-submit-button:hover {
-      background: rgba(255, 255, 255, 0.3);
-      border-color: rgba(255, 255, 255, 0.5);
-      transform: translateY(-3px);
-      box-shadow: 
-        0 12px 24px rgba(0, 0, 0, 0.3),
-        0 8px 16px rgba(0, 0, 0, 0.2);
+      background: rgba(99, 102, 241, 0.9);
+      border-color: rgba(99, 102, 241, 1);
     }
 
     .form-submit-button:active {
-      transform: translateY(-1px);
-      box-shadow: 
-        0 6px 12px rgba(0, 0, 0, 0.2),
-        0 4px 8px rgba(0, 0, 0, 0.1);
+      background: rgba(99, 102, 241, 0.7);
     }
 
     .form-status {
-      margin-top: 16px;
+      margin-top: 12px;
       padding: 12px 16px;
       border-radius: 12px;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 500;
       animation: fadeIn 0.3s ease;
     }
 
@@ -350,12 +360,10 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .form-status.error {
-      background: rgba(248, 113, 113, 0.2);
-      backdrop-filter: blur(10px);
+      background: rgba(248, 113, 113, 0.15);
+      backdrop-filter: blur(20px);
       color: rgba(255, 255, 255, 0.95);
-      border: 1px solid rgba(248, 113, 113, 0.4);
-      box-shadow: 0 4px 8px rgba(248, 113, 113, 0.2);
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(248, 113, 113, 0.3);
     }
 
     .personalization-overlay {
@@ -365,7 +373,7 @@ export class GdmLiveAudio extends LitElement {
       right: 0;
       bottom: 0;
       background: transparent;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(8px);
       z-index: 999;
       display: flex;
       align-items: center;
@@ -378,25 +386,27 @@ export class GdmLiveAudio extends LitElement {
       to { opacity: 1; }
     }
 
-    .form-icon {
-      width: 56px;
-      height: 56px;
-      margin: 0 auto 20px auto;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 20px;
+    .close-button {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      box-shadow: 
-        0 8px 16px rgba(0, 0, 0, 0.1),
-        0 4px 8px rgba(0, 0, 0, 0.05);
-      animation: iconFloat 3s ease-in-out infinite;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 16px;
+      transition: all 0.2s ease;
     }
 
-    @keyframes iconFloat {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-4px); }
+    .close-button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.9);
     }
 
     /* Mobile and tablet responsiveness */
@@ -1349,14 +1359,12 @@ export class GdmLiveAudio extends LitElement {
       return html`
         <div class="personalization-overlay">
           <div class="personalization-form">
-            <div class="form-icon">
-              🤖
-            </div>
-            <h2>Welcome to Diya</h2>
-            <p>Let's personalize your AI companion experience</p>
+            <button class="close-button" @click=${() => this.showPersonalizationForm = false}>×</button>
+            <h2>👤 Profile Settings</h2>
+            <p>Personalize your Diya experience</p>
             
             <div class="form-group">
-              <label for="username">Your Name</label>
+              <label for="username">Username</label>
               <input
                 type="text"
                 id="username"
@@ -1369,7 +1377,7 @@ export class GdmLiveAudio extends LitElement {
             </div>
 
             <div class="form-group">
-              <label for="occupation">Your Occupation</label>
+              <label for="occupation">User Profile</label>
               <input
                 type="text"
                 id="occupation"
@@ -1382,11 +1390,11 @@ export class GdmLiveAudio extends LitElement {
             </div>
 
             <div class="form-group">
-              <label for="companyWebsite">Company Website <span class="optional">(Optional)</span></label>
+              <label for="companyWebsite">Country</label>
               <input
                 type="text"
                 id="companyWebsite"
-                placeholder="https://yourcompany.com"
+                placeholder="India"
                 .value=${this.companyWebsite}
                 @input=${(e: Event) => {
                   this.companyWebsite = (e.target as HTMLInputElement).value;
@@ -1394,24 +1402,19 @@ export class GdmLiveAudio extends LitElement {
               />
             </div>
 
-            <div class="form-group">
-              <label for="linkedinProfile">LinkedIn Profile <span class="optional">(Optional)</span></label>
-              <input
-                type="text"
-                id="linkedinProfile"
-                placeholder="https://linkedin.com/in/yourprofile"
-                .value=${this.linkedinProfile}
-                @input=${(e: Event) => {
-                  this.linkedinProfile = (e.target as HTMLInputElement).value;
-                }}
-              />
+            <div class="form-buttons">
+              <button
+                class="form-cancel-button"
+                @click=${() => this.showPersonalizationForm = false}>
+                Cancel
+              </button>
+              <button
+                class="form-submit-button"
+                @click=${this.handlePersonalizationSubmit}>
+                Save Profile
+              </button>
             </div>
 
-            <button
-              class="form-submit-button"
-              @click=${this.handlePersonalizationSubmit}>
-              Start Your Journey
-            </button>
 
             ${this.error ? html`
               <div class="form-status error">
