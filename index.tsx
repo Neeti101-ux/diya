@@ -194,14 +194,15 @@ export class GdmLiveAudio extends LitElement {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(40px);
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
       border-radius: 20px;
-      padding: 40px;
+      padding: 32px;
       box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       max-width: 420px;
       width: 90%;
       max-height: 90vh;
@@ -224,7 +225,7 @@ export class GdmLiveAudio extends LitElement {
 
     .personalization-form h2 {
       margin: 0 0 8px 0;
-      color: rgba(255, 255, 255, 0.9);
+      color: rgba(0, 0, 0, 0.8);
       font-size: 24px;
       font-weight: 600;
       letter-spacing: -0.5px;
@@ -237,7 +238,7 @@ export class GdmLiveAudio extends LitElement {
 
     .personalization-form p {
       margin: 0 0 32px 0;
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(0, 0, 0, 0.6);
       font-size: 14px;
       line-height: 1.5;
       font-weight: 400;
@@ -252,7 +253,7 @@ export class GdmLiveAudio extends LitElement {
     .form-group label {
       display: block;
       margin-bottom: 6px;
-      color: rgba(255, 255, 255, 0.9);
+      color: rgba(0, 0, 0, 0.8);
       font-weight: 500;
       font-size: 14px;
       letter-spacing: 0px;
@@ -260,7 +261,7 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .form-group label .optional {
-      color: rgba(255, 255, 255, 0.6);
+      color: rgba(0, 0, 0, 0.5);
       font-weight: 400;
       text-transform: none;
       font-size: 12px;
@@ -270,11 +271,11 @@ export class GdmLiveAudio extends LitElement {
     .personalization-form input[type="text"] {
       width: 100%;
       padding: 12px 16px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 12px;
       font-size: 15px;
       font-family: inherit;
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.3);
       backdrop-filter: blur(10px);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       outline: none;
@@ -285,7 +286,7 @@ export class GdmLiveAudio extends LitElement {
 
     .personalization-form input[type="text"]:focus {
       border-color: rgba(99, 102, 241, 0.5);
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.4);
       box-shadow: 
         0 0 0 3px rgba(99, 102, 241, 0.1);
     }
@@ -303,10 +304,10 @@ export class GdmLiveAudio extends LitElement {
 
     .form-cancel-button {
       flex: 1;
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.3);
       backdrop-filter: blur(10px);
       color: rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       border-radius: 12px;
       padding: 12px 24px;
       font-size: 14px;
@@ -317,8 +318,8 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .form-cancel-button:hover {
-      background: rgba(255, 255, 255, 0.3);
-      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.4);
+      border-color: rgba(255, 255, 255, 0.5);
     }
 
     .form-submit-button {
@@ -349,8 +350,9 @@ export class GdmLiveAudio extends LitElement {
       margin-top: 12px;
       padding: 12px 16px;
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: rgba(0, 0, 0, 0.6);
       animation: fadeIn 0.3s ease;
     }
 
@@ -358,21 +360,21 @@ export class GdmLiveAudio extends LitElement {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
-      color: rgba(0, 0, 0, 0.6);
+
     .form-status.error {
-      background: rgba(248, 113, 113, 0.15);
-      backdrop-filter: blur(20px);
-      color: rgba(255, 255, 255, 0.95);
+      background: rgba(248, 113, 113, 0.2);
+      backdrop-filter: blur(10px);
+      color: rgba(139, 0, 0, 0.9);
       border: 1px solid rgba(248, 113, 113, 0.3);
-      background: rgba(255, 255, 255, 0.3);
-      color: rgba(0, 0, 0, 0.8);
+    }
+
     .personalization-overlay {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.4);
       backdrop-filter: blur(10px);
       z-index: 999;
       display: flex;
@@ -383,30 +385,31 @@ export class GdmLiveAudio extends LitElement {
 
     @keyframes overlayFadeIn {
       from { opacity: 0; }
-      background: rgba(248, 113, 113, 0.2);
-      backdrop-filter: blur(10px);
-      color: rgba(139, 0, 0, 0.9);
+      to { opacity: 1; }
+    }
+
     .close-button {
       position: absolute;
       top: 16px;
       right: 16px;
-      background: rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(30px);
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
       width: 32px;
       height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(0, 0, 0, 0.6);
       font-size: 16px;
       transition: all 0.2s ease;
     }
 
     .close-button:hover {
-      background: rgba(255, 255, 255, 0.15);
-      color: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.3);
+      color: rgba(0, 0, 0, 0.8);
     }
 
     /* Mobile and tablet responsiveness */
@@ -560,10 +563,6 @@ export class GdmLiveAudio extends LitElement {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(20px);
       border-radius: 16px;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      z-index: 1000;
-      display: flex;
       flex-direction: column;
       overflow: hidden;
     }
@@ -666,7 +665,6 @@ export class GdmLiveAudio extends LitElement {
       border-bottom: none;
     }
 
-      color: rgba(0, 0, 0, 0.8);
       font-weight: 600;
       font-size: 14px;
       margin-bottom: 6px;
@@ -690,7 +688,7 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .history-text {
-      color: rgba(0, 0, 0, 0.6);
+      color: #333;
       font-size: 14px;
       line-height: 1.5;
       margin: 0;
@@ -753,7 +751,7 @@ export class GdmLiveAudio extends LitElement {
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       background: rgba(255, 255, 255, 0.9);
       cursor: pointer;
-      color: rgba(0, 0, 0, 0.7);
+      color: #6366F1;
       font-weight: 500;
       font-size: 14px;
       transition: all 0.2s ease;
@@ -761,7 +759,7 @@ export class GdmLiveAudio extends LitElement {
 
     .back-button:hover {
       background: rgba(99, 102, 241, 0.1);
-      color: rgba(0, 0, 0, 0.5);
+    }
 
     @media (max-width: 768px) {
       .history-panel {
@@ -1391,14 +1389,27 @@ export class GdmLiveAudio extends LitElement {
             </div>
 
             <div class="form-group">
-              <label for="companyWebsite">Country</label>
+              <label for="companyWebsite">Company Website <span class="optional">(Optional)</span></label>
               <input
                 type="text"
                 id="companyWebsite"
-                placeholder="India"
+                placeholder="https://yourcompany.com"
                 .value=${this.companyWebsite}
                 @input=${(e: Event) => {
                   this.companyWebsite = (e.target as HTMLInputElement).value;
+                }}
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="linkedinProfile">LinkedIn Profile <span class="optional">(Optional)</span></label>
+              <input
+                type="text"
+                id="linkedinProfile"
+                placeholder="https://linkedin.com/in/yourprofile"
+                .value=${this.linkedinProfile}
+                @input=${(e: Event) => {
+                  this.linkedinProfile = (e.target as HTMLInputElement).value;
                 }}
               />
             </div>
@@ -1412,7 +1423,7 @@ export class GdmLiveAudio extends LitElement {
               <button
                 class="form-submit-button"
                 @click=${this.handlePersonalizationSubmit}>
-                Save Profile
+                Start Your Journey
               </button>
             </div>
 
