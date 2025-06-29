@@ -30,8 +30,7 @@ export class GdmLiveAudio extends LitElement {
   @state() error = '';
   @state() username = '';
   @state() occupation = '';
-  @state() companyWebsite = '';
-  @state() linkedinProfile = '';
+  @state() aboutMe = '';
   @state() showPersonalizationForm = true;
   @state() conversationHistory: ConversationMessage[] = [];
   @state() showHistory = false;
@@ -296,6 +295,37 @@ export class GdmLiveAudio extends LitElement {
       font-weight: 400;
     }
 
+    .personalization-form textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: inherit;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+      box-sizing: border-box;
+      font-weight: 400;
+      color: rgba(0, 0, 0, 0.8);
+      resize: vertical;
+      min-height: 80px;
+      max-height: 150px;
+    }
+
+    .personalization-form textarea:focus {
+      border-color: rgba(99, 102, 241, 0.5);
+      background: rgba(255, 255, 255, 0.4);
+      box-shadow: 
+        0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .personalization-form textarea::placeholder {
+      color: rgba(0, 0, 0, 0.5);
+      font-weight: 400;
+    }
+
     .form-buttons {
       display: flex;
       gap: 12px;
@@ -441,10 +471,16 @@ export class GdmLiveAudio extends LitElement {
         margin-bottom: 6px;
       }
 
-      .personalization-form input[type="text"] {
+      .personalization-form input[type="text"],
+      .personalization-form textarea {
         padding: 12px 14px;
         font-size: 16px; /* Prevent zoom on iOS */
         border-radius: 12px;
+      }
+
+      .personalization-form textarea {
+        min-height: 70px;
+        max-height: 120px;
       }
 
       .form-submit-button {
@@ -490,9 +526,15 @@ export class GdmLiveAudio extends LitElement {
         margin-bottom: 14px;
       }
 
-      .personalization-form input[type="text"] {
+      .personalization-form input[type="text"],
+      .personalization-form textarea {
         padding: 11px 12px;
         border-radius: 10px;
+      }
+
+      .personalization-form textarea {
+        min-height: 60px;
+        max-height: 100px;
       }
 
       .form-submit-button {
@@ -537,8 +579,14 @@ export class GdmLiveAudio extends LitElement {
         font-size: 11px;
       }
 
-      .personalization-form input[type="text"] {
+      .personalization-form input[type="text"],
+      .personalization-form textarea {
         padding: 8px 10px;
+      }
+
+      .personalization-form textarea {
+        min-height: 50px;
+        max-height: 80px;
       }
 
       .form-submit-button {
@@ -801,14 +849,12 @@ export class GdmLiveAudio extends LitElement {
     // Check localStorage for existing personalization data
     const savedUsername = localStorage.getItem('diya_username');
     const savedOccupation = localStorage.getItem('diya_occupation');
-    const savedCompanyWebsite = localStorage.getItem('diya_company_website');
-    const savedLinkedinProfile = localStorage.getItem('diya_linkedin_profile');
+    const savedAboutMe = localStorage.getItem('diya_about_me');
     
-    if (savedUsername && savedOccupation) {
+    if (savedUsername && savedOccupation && savedAboutMe) {
       this.username = savedUsername;
       this.occupation = savedOccupation;
-      this.companyWebsite = savedCompanyWebsite || '';
-      this.linkedinProfile = savedLinkedinProfile || '';
+      this.aboutMe = savedAboutMe || '';
       this.showPersonalizationForm = false;
       this.loadConversations();
       this.initClient();
@@ -934,26 +980,15 @@ export class GdmLiveAudio extends LitElement {
   }
 
   private async handlePersonalizationSubmit() {
-    if (!this.username.trim() || !this.occupation.trim()) {
-      this.error = 'Please fill in both your name and occupation';
+    if (!this.username.trim() || !this.occupation.trim() || !this.aboutMe.trim()) {
+      this.error = 'Please fill in all required fields';
       return;
     }
 
-    // Validate URLs if provided
-    if (this.companyWebsite.trim() && !this.isValidUrl(this.companyWebsite.trim())) {
-      this.error = 'Please enter a valid company website URL (e.g., https://example.com)';
-      return;
-    }
-
-    if (this.linkedinProfile.trim() && !this.isValidLinkedInUrl(this.linkedinProfile.trim())) {
-      this.error = 'Please enter a valid LinkedIn profile URL (e.g., https://linkedin.com/in/username)';
-      return;
-    }
     // Save to localStorage
     localStorage.setItem('diya_username', this.username);
     localStorage.setItem('diya_occupation', this.occupation);
-    localStorage.setItem('diya_company_website', this.companyWebsite);
-    localStorage.setItem('diya_linkedin_profile', this.linkedinProfile);
+    localStorage.setItem('diya_about_me', this.aboutMe);
     
     // Hide form and initialize the client
     this.showPersonalizationForm = false;
@@ -962,24 +997,6 @@ export class GdmLiveAudio extends LitElement {
     this.initClient();
   }
 
-  private isValidUrl(url: string): boolean {
-    try {
-      const urlObj = new URL(url);
-      return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-    } catch {
-      return false;
-    }
-  }
-
-  private isValidLinkedInUrl(url: string): boolean {
-    try {
-      const urlObj = new URL(url);
-      return (urlObj.hostname === 'linkedin.com' || urlObj.hostname === 'www.linkedin.com') &&
-             (urlObj.pathname.startsWith('/in/') || urlObj.pathname.startsWith('/company/'));
-    } catch {
-      return false;
-    }
-  }
   private initAudio() {
     this.nextStartTime = this.outputAudioContext.currentTime;
   }
@@ -1163,11 +1180,9 @@ export class GdmLiveAudio extends LitElement {
           
           The user you are speaking with is ${this.username}, who works as a ${this.occupation}. Please personalize your responses and advice based on their name and professional background. Address them by name when appropriate and tailor your business guidance to their specific occupation and industry context.
           
-          ${this.companyWebsite ? `Their company website is: ${this.companyWebsite}. You can reference this to understand their business better and provide more contextual advice.` : ''}
+          ${this.aboutMe ? `Here's what ${this.username} shared about themselves: "${this.aboutMe}". Use this information to provide more personalized and relevant advice, understanding their unique background, challenges, and goals.` : ''}
           
-          ${this.linkedinProfile ? `Their LinkedIn profile is: ${this.linkedinProfile}. This can help you understand their professional background and network.` : ''}
-          
-          When relevant to the conversation, you may suggest searching for information about their company or industry to provide more targeted advice. Use the provided context to make your guidance more specific and actionable for their particular business situation.`
+          Use this personal context to make your guidance more specific and actionable for their particular situation. When relevant, you may suggest searching for current information about their industry or interests to provide more targeted advice.`
         },
       }).then((session) => {
         this.session = session;
@@ -1389,29 +1404,15 @@ export class GdmLiveAudio extends LitElement {
             </div>
 
             <div class="form-group">
-              <label for="companyWebsite">Company Website <span class="optional">(Optional)</span></label>
-              <input
-                type="text"
-                id="companyWebsite"
-                placeholder="https://yourcompany.com"
-                .value=${this.companyWebsite}
+              <label for="aboutMe">Tell me about yourself</label>
+              <textarea
+                id="aboutMe"
+                placeholder="Share your background, interests, goals, challenges, or anything that would help Diya understand you better..."
+                .value=${this.aboutMe}
                 @input=${(e: Event) => {
-                  this.companyWebsite = (e.target as HTMLInputElement).value;
+                  this.aboutMe = (e.target as HTMLTextAreaElement).value;
                 }}
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="linkedinProfile">LinkedIn Profile <span class="optional">(Optional)</span></label>
-              <input
-                type="text"
-                id="linkedinProfile"
-                placeholder="https://linkedin.com/in/yourprofile"
-                .value=${this.linkedinProfile}
-                @input=${(e: Event) => {
-                  this.linkedinProfile = (e.target as HTMLInputElement).value;
-                }}
-              />
+              ></textarea>
             </div>
 
             <div class="form-buttons">
@@ -1423,7 +1424,7 @@ export class GdmLiveAudio extends LitElement {
               <button
                 class="form-submit-button"
                 @click=${this.handlePersonalizationSubmit}>
-                Start Your Journey
+                Save Profile
               </button>
             </div>
 
