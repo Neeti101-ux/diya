@@ -600,15 +600,10 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .history-close:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .history-panel {
         0 8px 32px rgba(0, 0, 0, 0.2),
         0 0 0 1px rgba(255, 255, 255, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
       border: 1px solid rgba(255, 255, 255, 0.25);
-    }
 
     .history-content {
       flex: 1;
@@ -1360,13 +1355,91 @@ export class GdmLiveAudio extends LitElement {
 
   render() {
     if (this.showPersonalizationForm) {
+      return html`
+        <div class="personalization-overlay">
+          <div class="personalization-form">
+            <button class="close-button" @click=${() => this.showPersonalizationForm = false}>×</button>
+            <h2>👤 Profile Settings</h2>
+            <p>Personalize your Diya experience</p>
+            
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                placeholder="Enter your name"
+                .value=${this.username}
+                @input=${(e: Event) => {
+                  this.username = (e.target as HTMLInputElement).value;
+                }}
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="occupation">User Profile</label>
+              <input
+                type="text"
+                id="occupation"
+                placeholder="e.g., Entrepreneur, Developer, Designer"
+                .value=${this.occupation}
+                @input=${(e: Event) => {
+                  this.occupation = (e.target as HTMLInputElement).value;
+                }}
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="companyWebsite">Company Website <span class="optional">(Optional)</span></label>
+              <input
+                type="text"
+                id="companyWebsite"
+                placeholder="https://yourcompany.com"
+                .value=${this.companyWebsite}
+                @input=${(e: Event) => {
+                  this.companyWebsite = (e.target as HTMLInputElement).value;
+                }}
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="linkedinProfile">LinkedIn Profile <span class="optional">(Optional)</span></label>
+              <input
+                type="text"
+                id="linkedinProfile"
+                placeholder="https://linkedin.com/in/yourprofile"
+                .value=${this.linkedinProfile}
+                @input=${(e: Event) => {
+                  this.linkedinProfile = (e.target as HTMLInputElement).value;
+                }}
+              />
+            </div>
+
+            <div class="form-buttons">
+              <button
+                class="form-cancel-button"
+                @click=${() => this.showPersonalizationForm = false}>
+                Cancel
+              </button>
+              <button
+                class="form-submit-button"
+                @click=${this.handlePersonalizationSubmit}>
+                Start Your Journey
+              </button>
+            </div>
+
+
+            ${this.error ? html`
+              <div class="form-status error">
+                ${this.error}
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
     return html`
       <div>
-        <!-- Always render the 3D visualization -->
-        <gdm-live-audio-visuals-3d
-          .inputNode=${this.inputNode}
-          .outputNode=${this.outputNode}></gdm-live-audio-visuals-3d>
-
         <div class="controls">
           <button
             id="userButton"
@@ -1414,6 +1487,9 @@ export class GdmLiveAudio extends LitElement {
         <div id="status">
           ${this.error || this.status}
         </div>
+        <gdm-live-audio-visuals-3d
+          .inputNode=${this.inputNode}
+          .outputNode=${this.outputNode}></gdm-live-audio-visuals-3d>
         
         ${this.showHistory ? html`
           <div class="history-panel">
@@ -1482,87 +1558,6 @@ export class GdmLiveAudio extends LitElement {
                 </button>
               </div>
             ` : ''}
-          </div>
-        ` : ''}
-        
-        <!-- Personalization form overlay -->
-        ${this.showPersonalizationForm ? html`
-          <div class="personalization-overlay">
-            <div class="personalization-form">
-              <button class="close-button" @click=${() => this.showPersonalizationForm = false}>×</button>
-              <h2>👤 Profile Settings</h2>
-              <p>Personalize your Diya experience</p>
-              
-              <div class="form-group">
-                <label for="username">Username</label>
-                <input
-                  type="text"
-                  id="username"
-                  placeholder="Enter your name"
-                  .value=${this.username}
-                  @input=${(e: Event) => {
-                    this.username = (e.target as HTMLInputElement).value;
-                  }}
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="occupation">User Profile</label>
-                <input
-                  type="text"
-                  id="occupation"
-                  placeholder="e.g., Entrepreneur, Developer, Designer"
-                  .value=${this.occupation}
-                  @input=${(e: Event) => {
-                    this.occupation = (e.target as HTMLInputElement).value;
-                  }}
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="companyWebsite">Company Website <span class="optional">(Optional)</span></label>
-                <input
-                  type="text"
-                  id="companyWebsite"
-                  placeholder="https://yourcompany.com"
-                  .value=${this.companyWebsite}
-                  @input=${(e: Event) => {
-                    this.companyWebsite = (e.target as HTMLInputElement).value;
-                  }}
-                />
-              </div>
-
-              <div class="form-group">
-                <label for="linkedinProfile">LinkedIn Profile <span class="optional">(Optional)</span></label>
-                <input
-                  type="text"
-                  id="linkedinProfile"
-                  placeholder="https://linkedin.com/in/yourprofile"
-                  .value=${this.linkedinProfile}
-                  @input=${(e: Event) => {
-                    this.linkedinProfile = (e.target as HTMLInputElement).value;
-                  }}
-                />
-              </div>
-
-              <div class="form-buttons">
-                <button
-                  class="form-cancel-button"
-                  @click=${() => this.showPersonalizationForm = false}>
-                  Cancel
-                </button>
-                <button
-                  class="form-submit-button"
-                  @click=${this.handlePersonalizationSubmit}>
-                  Start Your Journey
-                </button>
-              </div>
-              ${this.error ? html`
-                <div class="form-status error">
-                  ${this.error}
-                </div>
-              ` : ''}
-            </div>
           </div>
         ` : ''}
         
