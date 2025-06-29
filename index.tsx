@@ -374,8 +374,8 @@ export class GdmLiveAudio extends LitElement {
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(8px);
       z-index: 999;
       display: flex;
       align-items: center;
