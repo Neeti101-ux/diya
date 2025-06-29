@@ -194,15 +194,15 @@ export class GdmLiveAudio extends LitElement {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
+      background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(20px);
       border-radius: 24px;
       padding: 32px;
       box-shadow: 
-        0 32px 64px rgba(0, 0, 0, 0.12),
+        0 32px 64px rgba(0, 0, 0, 0.1),
         0 0 0 1px rgba(255, 255, 255, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       max-width: 480px;
       width: 90%;
       max-height: 90vh;
@@ -225,22 +225,21 @@ export class GdmLiveAudio extends LitElement {
 
     .personalization-form h2 {
       margin: 0 0 6px 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: rgba(255, 255, 255, 0.95);
       font-size: 28px;
       font-weight: 700;
       letter-spacing: -0.8px;
       line-height: 1.2;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .personalization-form p {
       margin: 0 0 24px 0;
-      color: #64748b;
+      color: rgba(255, 255, 255, 0.8);
       font-size: 15px;
       line-height: 1.5;
       font-weight: 400;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     .form-group {
@@ -252,15 +251,16 @@ export class GdmLiveAudio extends LitElement {
     .form-group label {
       display: block;
       margin-bottom: 8px;
-      color: #374151;
+      color: rgba(255, 255, 255, 0.9);
       font-weight: 600;
       font-size: 13px;
       letter-spacing: 0.2px;
       text-transform: uppercase;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     .form-group label .optional {
-      color: #9ca3af;
+      color: rgba(255, 255, 255, 0.6);
       font-weight: 400;
       text-transform: none;
       font-size: 11px;
@@ -270,36 +270,38 @@ export class GdmLiveAudio extends LitElement {
     .personalization-form input[type="text"] {
       width: 100%;
       padding: 14px 16px;
-      border: 2px solid #e2e8f0;
+      border: 2px solid rgba(255, 255, 255, 0.2);
       border-radius: 16px;
       font-size: 15px;
       font-family: inherit;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       outline: none;
       box-sizing: border-box;
       font-weight: 400;
-      color: #1f2937;
+      color: rgba(255, 255, 255, 0.95);
     }
 
     .personalization-form input[type="text"]:focus {
-      border-color: #667eea;
-      background: rgba(255, 255, 255, 1);
+      border-color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.2);
       box-shadow: 
-        0 0 0 4px rgba(102, 126, 234, 0.1),
-        0 4px 12px rgba(102, 126, 234, 0.15);
+        0 0 0 4px rgba(255, 255, 255, 0.1),
+        0 4px 12px rgba(255, 255, 255, 0.15);
       transform: translateY(-1px);
     }
 
     .personalization-form input[type="text"]::placeholder {
-      color: #a1a1aa;
+      color: rgba(255, 255, 255, 0.5);
       font-weight: 400;
     }
 
     .form-submit-button {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
       color: white;
-      border: none;
+      border: 1px solid rgba(255, 255, 255, 0.3);
       border-radius: 16px;
       padding: 16px 32px;
       font-size: 16px;
@@ -307,28 +309,30 @@ export class GdmLiveAudio extends LitElement {
       cursor: pointer;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 
-        0 8px 16px rgba(102, 126, 234, 0.3),
-        0 4px 8px rgba(102, 126, 234, 0.2);
+        0 8px 16px rgba(0, 0, 0, 0.2),
+        0 4px 8px rgba(0, 0, 0, 0.1);
       margin-top: 12px;
       width: 100%;
       letter-spacing: 0.3px;
       position: relative;
       overflow: hidden;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     .form-submit-button:hover {
-      background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
       transform: translateY(-3px);
       box-shadow: 
-        0 12px 24px rgba(102, 126, 234, 0.4),
-        0 8px 16px rgba(102, 126, 234, 0.3);
+        0 12px 24px rgba(0, 0, 0, 0.3),
+        0 8px 16px rgba(0, 0, 0, 0.2);
     }
 
     .form-submit-button:active {
       transform: translateY(-1px);
       box-shadow: 
-        0 6px 12px rgba(102, 126, 234, 0.3),
-        0 4px 8px rgba(102, 126, 234, 0.2);
+        0 6px 12px rgba(0, 0, 0, 0.2),
+        0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .form-status {
@@ -346,10 +350,12 @@ export class GdmLiveAudio extends LitElement {
     }
 
     .form-status.error {
-      background: linear-gradient(135deg, rgba(248, 113, 113, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
-      color: #dc2626;
-      border: 1px solid rgba(248, 113, 113, 0.3);
-      box-shadow: 0 4px 8px rgba(248, 113, 113, 0.1);
+      background: rgba(248, 113, 113, 0.2);
+      backdrop-filter: blur(10px);
+      color: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(248, 113, 113, 0.4);
+      box-shadow: 0 4px 8px rgba(248, 113, 113, 0.2);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
     .personalization-overlay {
@@ -358,10 +364,8 @@ export class GdmLiveAudio extends LitElement {
       left: 0;
       right: 0;
       bottom: 0;
-      background: 
-        linear-gradient(135deg, rgba(139, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.98) 50%, rgba(139, 0, 0, 0.95) 100%),
-        radial-gradient(circle at 30% 20%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 70% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+      background: transparent;
+      backdrop-filter: blur(5px);
       z-index: 999;
       display: flex;
       align-items: center;
@@ -378,15 +382,15 @@ export class GdmLiveAudio extends LitElement {
       width: 56px;
       height: 56px;
       margin: 0 auto 20px auto;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: rgba(255, 255, 255, 0.2);
       border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 24px;
       box-shadow: 
-        0 8px 16px rgba(102, 126, 234, 0.3),
-        0 4px 8px rgba(102, 126, 234, 0.2);
+        0 8px 16px rgba(0, 0, 0, 0.1),
+        0 4px 8px rgba(0, 0, 0, 0.05);
       animation: iconFloat 3s ease-in-out infinite;
     }
 
